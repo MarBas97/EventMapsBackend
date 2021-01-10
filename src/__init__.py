@@ -12,8 +12,13 @@ app.config.from_object(BaseConfig)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
-from src.models.user import User
 
+from src.models.user import User
+from src.models.pointer import Pointer
+
+@app.route('/', methods=['GET'])
+def index():    
+    return 'I am working'
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -58,3 +63,46 @@ def status():
             return jsonify({'status': True})
     else:
         return jsonify({'status': False})
+
+
+@app.route('/api/getareapointers', methods=['GET'])
+def getAreaPointers():
+            longSize = 0.005
+            latSize = 0.02
+            userLong = float(request.args.get('long'))
+            userLat = float(request.args.get('lat'))
+
+            if userLong and userLat: 
+                pointersQuery = Pointer.query.filter((Pointer.longitude >= userLong - longSize) & (Pointer.longitude <= userLong + longSize) & (Pointer.latitude >= userLat - latSize) & (Pointer.latitude <= userLat + latSize))
+
+                return jsonify([i.serialize for i in pointersQuery.all()])
+            else:
+                return badRequest('Location params cannot be empty')
+
+@app.route('/api/addPointer', methods=['POST'])
+def addPointer():
+    json_data = request.json
+    pointer = Pointer(
+        description=json_data['description'],
+        longitude=json_data['longitude'],
+        latitude = json_data['latitude'],
+        created_by = json_data['created_by']
+    )
+    try:
+        db.session.add(pointer)
+        db.session.commit()
+        status = 'success'
+    except Exception as e:
+        status = 'Failed to add pointer'
+        print(e)
+    db.session.close()
+    return jsonify({'result': status})
+
+
+def unauthorized():
+    response = jsonify({'message':'please log in'})
+    return response, 401
+
+def badRequest(message):
+    response = jsonify({'message':message})
+    return response, 404
