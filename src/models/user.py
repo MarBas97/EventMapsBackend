@@ -1,5 +1,3 @@
-
-
 import datetime
 from src import db, bcrypt
 
