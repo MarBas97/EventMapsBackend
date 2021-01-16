@@ -8,3 +8,4 @@ class BaseConfig(object):
     BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'dev.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    CORS_HEADERS = 'Content-Type'

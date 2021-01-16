@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 from src.config import BaseConfig
 
-
+# .venv\scripts\activate
 # config
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/": {"origins": "*"}})
 app.config.from_object(BaseConfig)
 
 bcrypt = Bcrypt(app)
@@ -66,9 +68,10 @@ def status():
 
 
 @app.route('/api/getareapointers', methods=['GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def getAreaPointers():
-            longSize = 0.005
-            latSize = 0.02
+            longSize = 0.01
+            latSize = 0.04
             userLong = float(request.args.get('long'))
             userLat = float(request.args.get('lat'))
 
@@ -80,8 +83,10 @@ def getAreaPointers():
                 return badRequest('Location params cannot be empty')
 
 @app.route('/api/addPointer', methods=['POST'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def addPointer():
     json_data = request.json
+    id = None
     pointer = Pointer(
         description=json_data['description'],
         longitude=json_data['longitude'],
@@ -90,13 +95,16 @@ def addPointer():
     )
     try:
         db.session.add(pointer)
+        db.session.flush()
+        id = pointer.id
+
         db.session.commit()
         status = 'success'
     except Exception as e:
         status = 'Failed to add pointer'
         print(e)
     db.session.close()
-    return jsonify({'result': status})
+    return jsonify({'result': status, 'id': id})
 
 
 def unauthorized():
