@@ -92,7 +92,7 @@ def getAreaPointers():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def getUserPointers():
     userId = int(request.args.get('id'))
-    pointersQuery = Pointer.query.filter((Pointer.created_by == session['user_id']) & (Pointer.created_by == userId))
+    pointersQuery = Pointer.query.filter((Pointer.created_by == userId))
     return jsonify([i.serialize for i in pointersQuery.all()])
 
 @app.route('/api/addPointer', methods=['POST'])
