@@ -23,28 +23,31 @@ def index():
     return 'I am working'
 
 @app.route('/api/register', methods=['POST'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def register():
     json_data = request.json
-    user = User(
-        email=json_data['email'],
-        password=json_data['password']
-    )
     try:
+        user = User(
+        email=json_data['email'],
+        password=bcrypt.generate_password_hash(json_data['password'])
+        )
+        print(user)
         db.session.add(user)
         db.session.commit()
         status = 'success'
-    except:
+    except Exception as e:
+        print(e)
         status = 'this user is already registered'
     db.session.close()
     return jsonify({'result': status})
 
 
 @app.route('/api/login', methods=['POST'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def login():
     json_data = request.json
     user = User.query.filter_by(email=json_data['email']).first()
-    if user and bcrypt.check_password_hash(
-            user.password, json_data['password']):
+    if user and bcrypt.check_password_hash(user.password, json_data['password']):
         session['logged_in'] = True
         session['user_id'] = user.get_id()
         status = True
@@ -54,6 +57,7 @@ def login():
 
 
 @app.route('/api/logout')
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def logout():
     session.pop('logged_in', None)
     return jsonify({'result': 'success'})

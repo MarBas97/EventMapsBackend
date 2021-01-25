@@ -1,6 +1,5 @@
 import datetime
 from src import db, bcrypt
-import jwt
 
 class User(db.Model):
 
@@ -14,7 +13,7 @@ class User(db.Model):
 
     def __init__(self, email, password, admin=False):
         self.email = email
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = password
         self.registered_on = datetime.datetime.now()
         self.admin = admin
 
@@ -32,9 +31,4 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {0}>'.format(self.email)
-
-    def jwt(self, user_id):
-        encoded_jwt = jwt.encode({"some": "payload"}, "secret", algorithm="HS256")
-        return encoded_jwt
-    
     
