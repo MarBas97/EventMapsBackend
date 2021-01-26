@@ -26,20 +26,22 @@ def index():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def register():
     json_data = request.json
+    id = None
     try:
         user = User(
         email=json_data['email'],
         password=bcrypt.generate_password_hash(json_data['password'])
         )
-        print(user)
         db.session.add(user)
+        db.session.flush()
+        id = user.id
         db.session.commit()
         status = 'success'
     except Exception as e:
         print(e)
         status = 'this user is already registered'
     db.session.close()
-    return jsonify({'result': status})
+    return jsonify({'result': status,'id': id})
 
 
 @app.route('/api/login', methods=['POST'])
@@ -76,8 +78,8 @@ def status():
 @app.route('/api/getareapointers', methods=['GET'])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def getAreaPointers():
-            longSize = 0.01
-            latSize = 0.04
+            longSize = 0.1
+            latSize = 0.1
             userLong = float(request.args.get('long'))
             userLat = float(request.args.get('lat'))
 
