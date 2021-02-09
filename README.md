@@ -1,6 +1,6 @@
-## API documentation
+# API documentation
 The repository contains an API made using Python with Flask technology and local database. It is related to the Frontend repository (https://github.com/MarBas97/EventMapsFront). 
-# Launching the project
+## Launching the project
 Download the project and to install all dependencies run
 
 *pip install -r requirements.txt*
@@ -21,7 +21,7 @@ Launching the application:
 
 Running on *http://127.0.0.1:5000/*
 
-# Endpoints description
+## Endpoints description
 | Address | Method | Input | Output |
 | ------- | ------ | ----- | ------ |  
 | '/api/register'| 'POST' | {email: "email", password: "password"} | Flag indicating whether user registered or not |
