@@ -1,5 +1,5 @@
 # API documentation
-The repository contains an API made using Python with Flask technology and local database. It is related to the Frontend repository (https://github.com/MarBas97/EventMapsFront). 
+The repository contains an API made using Python with Flask technology and local database. It is related to the Frontend repository (https://github.com/MarBas97/EventMapsFront). API provides basic endpoints to enable users to register, login, create and store their marks in the database.
 ## Launching the project
 Download the project and to install all dependencies run
 
